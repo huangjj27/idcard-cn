@@ -48,6 +48,6 @@ jobs:
           args: $CRATESIO_TOKEN
       - name: publish
         uses: actions-rs/cargo@v1
-        with:
+        with: 
           command: publish
-          args: --dry-run
+          args: --dry-run --manifest-path ${{ matrix.crate }}/Cargo.toml
