@@ -1,12 +1,12 @@
 use chrono::{Local, NaiveDate, TimeZone};
 use std::str::FromStr;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Seq {
     inner: u16,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum InvalidSeq {
     StrParseError,
     Overflow(u16),
@@ -31,12 +31,12 @@ pub enum Sex {
 }
 
 /// 代表公民身份号码公民出生日期的结构体，只有根据常识有效日期才能被转换。
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Date {
     inner: NaiveDate,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum InvalidDate {
     StrParseError,
     TooOldDate,
@@ -50,7 +50,7 @@ impl FromStr for Date {
         let inner =
             NaiveDate::parse_from_str(s, "%Y%m%d").map_err(|_| InvalidDate::StrParseError)?;
 
-        if inner < Local.ymd(1990, 1, 1).naive_local() {
+        if inner < Local.ymd(1900, 1, 1).naive_local() {
             return Err(InvalidDate::TooOldDate);
         }
         if inner > Local::today().naive_local() {
