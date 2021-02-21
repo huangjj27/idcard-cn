@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: pad & cd ${{ matrix.crate }} & pwd
+      - run: pwd & cd ${{ matrix.crate }} & pwd
       - name: login
         uses: actions-rs/cargo@v1
         with:
