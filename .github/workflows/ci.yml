@@ -24,11 +24,12 @@ jobs:
         with:
           command: test
 
-  deploy:
+  publish:
     needs: build_test
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
+      - run: cd idcard
       - uses: actions-rs/cargo@v1
         with:
           command: login
