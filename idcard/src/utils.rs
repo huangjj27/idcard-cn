@@ -1,5 +1,5 @@
 use chrono::{Local, NaiveDate, TimeZone};
-use std::convert::TryFrom;
+use std::str::FromStr;
 
 #[derive(Debug)]
 pub struct Seq {
@@ -12,10 +12,10 @@ pub enum InvalidSeq {
     Overflow(u16),
 }
 
-impl TryFrom<&str> for Seq {
-    type Error = InvalidSeq;
+impl FromStr for Seq {
+    type Err = InvalidSeq;
 
-    fn try_from(s: &str) -> Result<Self, Self::Error> {
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         let seq = s.parse::<u16>().map_err(|_| InvalidSeq::StrParseError)?;
         if seq > 999 {
             return Err(InvalidSeq::Overflow(seq));
@@ -43,10 +43,10 @@ pub enum InvalidDate {
     UncomeDate,
 }
 
-impl TryFrom<&str> for Date {
-    type Error = InvalidDate;
+impl FromStr for Date {
+    type Err = InvalidDate;
 
-    fn try_from(s: &str) -> Result<Self, Self::Error> {
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         let inner =
             NaiveDate::parse_from_str(s, "%Y%m%d").map_err(|_| InvalidDate::StrParseError)?;
 

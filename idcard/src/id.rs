@@ -1,7 +1,7 @@
 //! 第二代中华人民共和国身份证公民身份号码
 
 use gb2260::Division;
-use std::convert::TryFrom;
+use std::str::FromStr;
 
 use crate::utils::{Date, Seq};
 
@@ -49,10 +49,10 @@ pub enum InvalidId {
     WrongCheckCode,
 }
 
-impl TryFrom<&str> for IdentityNumber {
-    type Error = InvalidId;
+impl FromStr for IdentityNumber {
+    type Err = InvalidId;
 
-    fn try_from(s: &str) -> Result<Self, Self::Error> {
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
         let s_len = s.chars().count();
         if s_len != IDNUMBER_LENGTH {
             return Err(InvalidId::LengthNotMatch(s_len));
@@ -65,11 +65,11 @@ impl TryFrom<&str> for IdentityNumber {
         };
 
         let (birthday, rest) = rest.split_at(BIRTHDAY_LENGTH);
-        let birth = Date::try_from(birthday)
+        let birth = birthday.parse::<Date>()
             .map_err(|_| InvalidId::InvalidBirthday(birthday.to_owned()))?;
 
         let (seq, chk_code) = rest.split_at(SEQ_LENGTH);
-        let seq = Seq::try_from(seq).map_err(|_| InvalidId::InvalidSeq(seq.to_owned()))?;
+        let seq = seq.parse::<Seq>().map_err(|_| InvalidId::InvalidSeq(seq.to_owned()))?;
 
         let chk_idx: usize =
             s.chars()
@@ -91,15 +91,16 @@ impl TryFrom<&str> for IdentityNumber {
 mod test {
     use super::*;
 
+    #[test]
     fn test_wrong_length_id() {
         let shorter = "51010819720505213";
-        assert_eq!(IdentityNumber::try_from(shorter).unwrap_err(), InvalidId::LengthNotMatch(17));
+        assert_eq!(shorter.parse::<IdentityNumber>().unwrap_err(), InvalidId::LengthNotMatch(17));
 
         let longer = "5101081972050521378";
-        assert_eq!(IdentityNumber::try_from(longer).unwrap_err(), InvalidId::LengthNotMatch(19));
+        assert_eq!(longer.parse::<IdentityNumber>().unwrap_err(), InvalidId::LengthNotMatch(19));
     }
 
-    fn test_invalid_division() {
+    // fn test_invalid_division() {
 
-    }
+    // }
 }
