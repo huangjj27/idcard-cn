@@ -34,4 +34,4 @@ jobs:
           args: $CRATESIO_TOKEN
       - uses: actions-rs/cargo@v1
         with:
-          command: publish
+          command: publish --dry-run
