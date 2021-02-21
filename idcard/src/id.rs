@@ -45,8 +45,11 @@ pub enum InvalidId {
     /// 序列号格式不正确
     InvalidSeq(String),
 
+    /// 校验码为非法字符
+    InvalidCheckCode(char),
+
     /// 字符串格式正确，但是校验码与输入不匹配
-    WrongCheckCode,
+    WrongCheckCode(char),
 }
 
 impl FromStr for IdentityNumber {
@@ -71,16 +74,20 @@ impl FromStr for IdentityNumber {
         let (seq, chk_code) = rest.split_at(SEQ_LENGTH);
         let seq = seq.parse::<Seq>().map_err(|_| InvalidId::InvalidSeq(seq.to_owned()))?;
 
+        let chk_code = match chk_code.chars().next() {
+            Some(chr) if CHECK_CODE.contains(chr) => chr,
+            Some(chr) if !CHECK_CODE.contains(chr) => return Err(InvalidId::InvalidSeq(chr)),
+            None => unreachable!("chk_code should be always found. This is a bug"),
+        };
+
         let chk_idx: usize =
             s.chars()
                 .take(IDNUMBER_LENGTH - 1)
                 .map(|chr| chr.to_digit(10).unwrap() as u8)
                 .zip(WEIGHTS.iter())
                 .fold(0u8, |acc, (d, w)| (acc + d * w) % ID_MODULE) as usize;
-        let chk_code = chk_code.chars().next().unwrap();
-
         if chk_code != CHECK_CODE[chk_idx] {
-            return Err(InvalidId::WrongCheckCode);
+            return Err(InvalidId::WrongCheckCode(chk_code));
         }
 
         Ok(IdentityNumber { div, birth, seq })
@@ -94,13 +101,50 @@ mod test {
     #[test]
     fn test_wrong_length_id() {
         let shorter = "51010819720505213";
-        assert_eq!(shorter.parse::<IdentityNumber>().unwrap_err(), InvalidId::LengthNotMatch(17));
+        assert_eq!(shorter.parse::<IdentityNumber>().unwrap_err(), InvalidId::LengthNotMatch(IDNUMBER_LENGTH - 1));
 
         let longer = "5101081972050521378";
-        assert_eq!(longer.parse::<IdentityNumber>().unwrap_err(), InvalidId::LengthNotMatch(19));
+        assert_eq!(longer.parse::<IdentityNumber>().unwrap_err(), InvalidId::LengthNotMatch(IDNUMBER_LENGTH + 1));
     }
 
-    // fn test_invalid_division() {
+    #[test]
+    fn test_invalid_division() {
+        let wrong_division = "000000197205052137";
+        assert_eq!(wrong_division.parse::<IdentityNumber>().unwrap_err(), InvalidId::DivisionNotFound("000000".to_string()));
 
-    // }
+        let wrong_format = "51X108197205052137";
+        assert_eq!(wrong_format.parse::<IdentityNumber>().unwrap_err(), InvalidId::DivisionNotFound("51X108".to_string()));
+    }
+
+    #[test]
+    fn test_invalid_birthday() {
+        let wrong_format = "5101081972?5052137";
+        assert_eq!(wrong_format.parse::<IdentityNumber>().unwrap_err(), InvalidId::InvalidBirthday("1972?505".to_string()));
+
+        let old_date = "510108187205052137";
+        assert_eq!(old_date.parse::<IdentityNumber>().unwrap_err(), InvalidId::InvalidBirthday("19820505".to_string()));
+
+        let upcoming = "510108297205052137";
+        assert_eq!(upcoming.parse::<IdentityNumber>().unwrap_err(), InvalidId::InvalidBirthday("29720505".to_string()));
+    }
+
+    #[test]
+    fn test_invalid_seq() {
+        let wrong_format = "5101081972050521$7";
+        assert_eq!(wrong_format.parse::<IdentityNumber>().unwrap_err(), InvalidId::InvalidSeq("21$".to_string()));
+    }
+
+
+    #[test]
+    fn test_wrong_checkcode() {
+        let wrong_format = "51010819720505213%";
+        assert_eq!(wrong_format.parse::<IdentityNumber>().unwrap_err(), InvalidId::InvalidCheckCode('%'));
+
+        // 小写的 `x` 校验码也被认为是非法校验码
+        let wrong_format = "51010819720505213x";
+        assert_eq!(wrong_format.parse::<IdentityNumber>().unwrap_err(), InvalidId::InvalidCheckCode('x'));
+
+        let wrong_chk = "51010819720505213X";
+        assert_eq!(wrong_chk.parse::<IdentityNumber>().unwrap_err(), InvalidId::WrongCheckCode('X'));
+    }
 }
