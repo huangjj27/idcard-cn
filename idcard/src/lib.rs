@@ -8,7 +8,7 @@
 mod id;
 mod utils;
 
-pub use crate::id::IdentityNumber;
+pub use crate::id::{IdentityNumber, InvalidId};
 pub use crate::utils::{Date, Sex};
 
 pub trait IdCard {
