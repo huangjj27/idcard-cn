@@ -31,11 +31,15 @@ jobs:
 
   publish:
     needs: build_test
-    if: github.event_name == 'push'
+    strategy:
+      fail-fast: false
+      matrix:
+        crate: ["idcard"]
+    # if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: cd idcard
+      - run: cd ${{ matrix.crate }} & pwd
       - name: login
         uses: actions-rs/cargo@v1
         with:
