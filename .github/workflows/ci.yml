@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: dev, master
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+  deploy:
+    needs: build_test
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: login
+          args: $CRATESIO_TOKEN
+      - uses: actions-rs/cargo@v1
+        with:
+          command: publish
