@@ -50,7 +50,6 @@ jobs:
           command: check
 
   build:
-    if: github.event_name == 'pull_request' && github.ref == 'refs/heads/dev'
     needs:
       - format
       - check
@@ -68,7 +67,6 @@ jobs:
           command: build
 
   test:
-    if: github.event_name == 'pull_request' && github.ref == 'refs/heads/dev'
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -84,24 +82,4 @@ jobs:
           command: test
 
   release-cratesio:
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'
-    needs: test
-    strategy:
-      fail-fast: false
-      matrix:
-        crate: ["idcard"]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          path: ${{ matrix.crate }}
-      - name: login
-        uses: actions-rs/cargo@v1
-        with:
-          command: login
-          args: $CRATESIO_TOKEN
-      - name: publish
-        uses: actions-rs/cargo@v1
-        with:
-          command: publish
-          args: --dry-run --manifest-path ${{ matrix.crate }}/Cargo.toml
+    if: github.event_name == 'workflow_dispatch'
