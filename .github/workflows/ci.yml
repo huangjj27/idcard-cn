@@ -21,6 +21,7 @@ env:
 
 jobs:
   format:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -36,6 +37,7 @@ jobs:
           args: -- --check
 
   check:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -50,6 +52,7 @@ jobs:
           command: check
 
   build:
+    if: github.event_name != 'workflow_dispatch'
     needs:
       - format
       - check
@@ -67,6 +70,7 @@ jobs:
           command: build
 
   test:
+    if: github.event_name != 'workflow_dispatch'
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -83,3 +87,29 @@ jobs:
 
   release-cratesio:
     if: github.event_name == 'workflow_dispatch'
+    needs: test
+    runs-on: ubuntu-latest
+    stragety:
+      fail-fast: false
+      matrix:
+        crate: 
+          - idcard
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          default: true
+      - name: login crates-io
+        uses: actions-rs/cargo@v1
+        with:
+          command: login
+          args: $CRATESIO_TOKEN
+      - name: publish onto crates-in
+        uses: actions-rs/cargo@v1
+        with:
+          command: publish
+          args: --dry-run --manifest-path ${{ matrix.crate }}/Cargo.toml
+
+        
