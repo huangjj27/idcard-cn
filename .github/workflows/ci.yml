@@ -50,7 +50,7 @@ jobs:
           command: check
 
   build:
-    if: github.event_name == 'pull_request' && github.ref == 'ref/heads/dev'
+    if: github.event_name == 'pull_request' && github.ref == 'refs/heads/dev'
     needs:
       - format
       - check
@@ -68,7 +68,7 @@ jobs:
           command: build
 
   test:
-    if: github.event_name == 'pull_request' && github.ref == 'ref/heads/dev'
+    if: github.event_name == 'pull_request' && github.ref == 'refs/heads/dev'
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -84,7 +84,7 @@ jobs:
           command: test
 
   release-cratesio:
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'ref/heads/master'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master'
     needs: test
     strategy:
       fail-fast: false
