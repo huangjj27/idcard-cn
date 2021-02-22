@@ -22,7 +22,6 @@ env:
 
 jobs:
   format:
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -38,7 +37,6 @@ jobs:
           args: -- --check
 
   check:
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -87,7 +85,7 @@ jobs:
           command: test
 
   release-cratesio:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'workflow_dispatch'
     needs: test
     strategy:
       fail-fast: false
