@@ -38,28 +38,3 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
-
-
-
-  publish:
-    needs: build_test
-    strategy:
-      fail-fast: false
-      matrix:
-        crate: ["idcard"]
-    # if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          path: ${{ matrix.crate }}
-      - name: login
-        uses: actions-rs/cargo@v1
-        with:
-          command: login
-          args: $CRATESIO_TOKEN
-      - name: publish
-        uses: actions-rs/cargo@v1
-        with:
-          command: publish
-          args: --dry-run --manifest-path ${{ matrix.crate }}/Cargo.toml
