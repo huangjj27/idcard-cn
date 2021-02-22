@@ -89,7 +89,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     needs: test
     runs-on: ubuntu-latest
-    stragety:
+    strategy:
       fail-fast: false
       matrix:
         crate: 
