@@ -50,7 +50,7 @@ jobs:
           command: check
 
   build:
-    if: github.event_name == 'pull_request' && github.ref = 'ref/heads/dev'
+    if: github.event_name == 'pull_request' && github.ref == 'ref/heads/dev'
     needs:
       - format
       - check
