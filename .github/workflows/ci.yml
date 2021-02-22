@@ -1,0 +1,110 @@
+name: Continuous Integration
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Person to greet'
+        required: true
+        default: 'huangjj27'
+      home:
+        description: 'location'
+        required: false
+        default: 'The Octoverse'
+  push:
+  pull_request:
+    branches:
+      - dev
+      - master
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  format:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          default: true
+      - name: fmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: -- --check
+
+  check:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          default: true
+      - name: check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+
+  build:
+    if: github.event_name == 'pull_request'
+    needs:
+      - format
+      - check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          default: true
+      - name: build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+
+  test:
+    if: github.event_name == 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          default: true
+      - name: test
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+
+  release-cratesio:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        crate: ["idcard"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: ${{ matrix.crate }}
+      - name: login
+        uses: actions-rs/cargo@v1
+        with:
+          command: login
+          args: $CRATESIO_TOKEN
+      - name: publish
+        uses: actions-rs/cargo@v1
+        with:
+          command: publish
+          args: --dry-run --manifest-path ${{ matrix.crate }}/Cargo.toml
