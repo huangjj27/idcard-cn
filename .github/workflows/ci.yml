@@ -68,7 +68,7 @@ jobs:
           command: build
 
   test:
-    if: github.event_name == 'pull_request' && github.ref = 'ref/heads/dev'
+    if: github.event_name == 'pull_request' && github.ref == 'ref/heads/dev'
     needs: build
     runs-on: ubuntu-latest
     steps:
