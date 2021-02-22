@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push: master
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  cratesio:
+    strategy:
+      fail-fast: false
+      matrix:
+        crate: ["idcard"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: ${{ matrix.crate }}
+      - name: login
+        uses: actions-rs/cargo@v1
+        with:
+          command: login
+          args: $CRATESIO_TOKEN
+      - name: publish
+        uses: actions-rs/cargo@v1
+        with:
+          command: publish
+          args: --dry-run --manifest-path ${{ matrix.crate }}/Cargo.toml
