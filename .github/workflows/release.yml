@@ -1,8 +1,17 @@
 name: Release
 
 on:
+  branches: master
   workflow_dispatch:
-
+    inputs:
+      name:
+        description: 'Person to greet'
+        required: true
+        default: 'huangjj27'
+      home:
+        description: 'location'
+        required: false
+        default: 'The Octoverse'
 
 env:
   CARGO_TERM_COLOR: always

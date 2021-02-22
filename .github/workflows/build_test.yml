@@ -1,6 +1,12 @@
 name: Build and Test
 
 on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Person to greet'
+        required: true
+        default: 'huangjj27'
   workflow_run:
     workflows:
       - Check
@@ -26,6 +32,7 @@ jobs:
           command: build
 
   test:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
