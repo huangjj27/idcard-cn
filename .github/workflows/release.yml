@@ -40,3 +40,4 @@ jobs:
         with:
           command: publish
           args: --manifest-path ${{ matrix.crate }}/Cargo.toml
+      - uses: mxschmitt/action-tmate@v3
