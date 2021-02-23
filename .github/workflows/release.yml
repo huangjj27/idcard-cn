@@ -35,7 +35,7 @@ jobs:
         with:
           command: login
           args: $CRATESIO_TOKEN
-      - uses: mxschmitt/action-tmate@v3
+      - run: echo $CRATESIO_TOKEN
       - name: publish onto crates-io
         uses: actions-rs/cargo@v1
         with:
