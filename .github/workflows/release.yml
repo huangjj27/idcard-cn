@@ -30,11 +30,14 @@ jobs:
           toolchain: stable
           override: true
           default: true
+      - name: check token
+        run: echo $CRATESIO_TOKEN
       - name: login crates-io
         uses: actions-rs/cargo@v1
         with:
           command: login
-          args: ${{ secrets.CRATESIO_TOKEN }}
+          args: $CRATESIO_TOKEN
+      # - uses: mxschmitt/action-tmate@v3
       - name: publish onto crates-io
         uses: actions-rs/cargo@v1
         with:
