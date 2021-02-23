@@ -34,8 +34,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: login
-          args: $CRATESIO_TOKEN
-      - run: echo $CRATESIO_TOKEN
+          args: ${{ secrets.CRATESIO_TOKEN }}
       - name: publish onto crates-io
         uses: actions-rs/cargo@v1
         with:
