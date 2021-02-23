@@ -1,9 +1,16 @@
-name: CI
+name: Continuous Integration
 
 on:
   workflow_dispatch:
-  push:
-    branches: master
+    inputs:
+      name:
+        description: 'Person to greet'
+        required: true
+        default: 'huangjj27'
+      home:
+        description: 'location'
+        required: false
+        default: 'The Octoverse'
   pull_request:
     branches:
       - dev
@@ -13,36 +20,96 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build_test:
+  format:
+    if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          override: true
+          default: true
+      - name: fmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: -- --check
+
+  check:
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          default: true
+      - name: check
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+
+  build:
+    if: github.event_name != 'workflow_dispatch'
+    needs:
+      - format
+      - check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          default: true
       - name: build
         uses: actions-rs/cargo@v1
         with:
           command: build
+
+  test:
+    if: github.event_name != 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          default: true
       - name: test
         uses: actions-rs/cargo@v1
         with:
           command: test
 
-  publish:
-    needs: build_test
-    if: github.event_name == 'push'
+  release-cratesio:
+    if: github.event_name == 'workflow_dispatch'
+    needs: test
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        crate: 
+          - idcard
     steps:
       - uses: actions/checkout@v2
-      - run: cd idcard
-      - name: login
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          default: true
+      - name: login crates-io
         uses: actions-rs/cargo@v1
         with:
           command: login
           args: $CRATESIO_TOKEN
-      - name: publish
+      - name: publish onto crates-in
         uses: actions-rs/cargo@v1
         with:
           command: publish
-          args: --dry-run
+          args: --dry-run --manifest-path ${{ matrix.crate }}/Cargo.toml
+
+        
