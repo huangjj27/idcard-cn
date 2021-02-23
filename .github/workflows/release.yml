@@ -35,9 +35,9 @@ jobs:
         with:
           command: login
           args: $CRATESIO_TOKEN
+      - uses: mxschmitt/action-tmate@v3
       - name: publish onto crates-io
         uses: actions-rs/cargo@v1
         with:
           command: publish
           args: --manifest-path ${{ matrix.crate }}/Cargo.toml
-      - uses: mxschmitt/action-tmate@v3
