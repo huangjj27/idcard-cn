@@ -1,0 +1,42 @@
+name: Continuous Integration
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Person to greet'
+        required: true
+        default: 'huangjj27'
+      home:
+        description: 'location'
+        required: false
+        default: 'The Octoverse'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release-cratesio:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        crate:
+          - idcard
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          default: true
+      - name: login crates-io
+        uses: actions-rs/cargo@v1
+        with:
+          command: login
+          args: $CRATESIO_TOKEN
+      - name: publish onto crates-io
+        uses: actions-rs/cargo@v1
+        with:
+          command: publish
+          args: --manifest-path ${{ matrix.crate }}/Cargo.toml
