@@ -87,7 +87,6 @@ jobs:
 
   release-cratesio:
     if: github.event_name == 'workflow_dispatch'
-    needs: test
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -106,10 +105,10 @@ jobs:
         with:
           command: login
           args: $CRATESIO_TOKEN
-      - name: publish onto crates-in
+      - name: publish onto crates-io
         uses: actions-rs/cargo@v1
         with:
           command: publish
-          args: --dry-run --manifest-path ${{ matrix.crate }}/Cargo.toml
+          args: --manifest-path ${{ matrix.crate }}/Cargo.toml
 
         
