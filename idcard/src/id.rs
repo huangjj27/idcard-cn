@@ -3,7 +3,8 @@
 use gb2260::Division;
 use std::str::FromStr;
 
-use crate::utils::{Date, Seq};
+use crate::Date;
+use crate::utils::Seq;
 
 const IDNUMBER_LENGTH: usize = 18;
 const WEIGHTS: [u8; 17] = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
@@ -199,5 +200,21 @@ mod test {
 
         let valid_str = "510108197205052137";
         assert_eq!(valid_str.parse::<IdentityNumber>().unwrap(), id);
+    }
+}
+
+impl ToString for IdentityNumber {
+    fn to_string(&self) -> String {
+        let mut s = format!("{:>06}{}{:>03}", self.div.code, self.birth.code(), self.seq.code());
+
+        let chk_idx: usize =
+            s.chars()
+                .take(IDNUMBER_LENGTH - 1)
+                .map(|chr| chr.to_digit(10).unwrap() as u8)
+                .zip(WEIGHTS.iter())
+                .fold(0u8, |acc, (d, w)| (acc + d * w) % ID_MODULE) as usize;
+        s.push(CHECK_CODE[chk_idx]);
+
+        s
     }
 }

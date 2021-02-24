@@ -6,10 +6,12 @@
 //! [《中华人民共和国居民身份证法》]: http://www.gov.cn/zhengce/2011-10/29/content_2602263.htm
 
 mod id;
+mod date;
 mod utils;
 
 pub use crate::id::{IdentityNumber, InvalidId};
-pub use crate::utils::{Date, Sex};
+pub use crate::date::Date;
+pub use crate::utils::Sex;
 
 pub trait IdCard {
     fn id(&self) -> IdentityNumber;
