@@ -1,4 +1,8 @@
 [workspace]
 members = [
     "idcard",
+    "idcard-impl",
 ]
+
+[patch.crates-io.idcard-cn]
+path = "idcard"

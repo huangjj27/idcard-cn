@@ -4,7 +4,7 @@ version = "0.0.1"
 authors = ["huangjj27 <huangjj.27@qq.com>"]
 edition = "2018"
 repository = "https://github.com/huangjj27/idcard-rs"
-license = "LGPL-3.0-or-later"
+license = "MIT OR Apache-2.0"
 description = "根据《中华人民共和国居民身份证法》提供身份证上信息读取的接口特质"
 keywords = ["idcard", "China"]
 
