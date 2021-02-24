@@ -30,6 +30,7 @@ jobs:
           toolchain: stable
           override: true
           default: true
+      - uses: Swatinem/rust-cache@v1
       - name: check token
         run: echo $CRATESIO_TOKEN
       - name: login crates-io

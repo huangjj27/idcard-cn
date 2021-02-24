@@ -20,6 +20,7 @@ jobs:
           toolchain: stable
           override: true
           default: true
+      - uses: Swatinem/rust-cache@v1
       - name: fmt
         uses: actions-rs/cargo@v1
         with:
@@ -36,6 +37,7 @@ jobs:
           toolchain: stable
           override: true
           default: true
+      - uses: Swatinem/rust-cache@v1
       - name: check
         uses: actions-rs/cargo@v1
         with:
@@ -54,6 +56,7 @@ jobs:
           toolchain: stable
           override: true
           default: true
+      - uses: Swatinem/rust-cache@v1
       - name: build
         uses: actions-rs/cargo@v1
         with:
@@ -70,6 +73,7 @@ jobs:
           toolchain: stable
           override: true
           default: true
+      - uses: Swatinem/rust-cache@v1
       - name: test
         uses: actions-rs/cargo@v1
         with:
