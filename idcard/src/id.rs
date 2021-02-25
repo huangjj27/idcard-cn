@@ -3,8 +3,8 @@
 use gb2260::Division;
 use std::str::FromStr;
 
-use crate::Date;
 use crate::utils::Seq;
+use crate::Date;
 
 const IDNUMBER_LENGTH: usize = 18;
 const WEIGHTS: [u8; 17] = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
@@ -205,7 +205,12 @@ mod test {
 
 impl ToString for IdentityNumber {
     fn to_string(&self) -> String {
-        let mut s = format!("{:>06}{}{:>03}", self.div.code, self.birth.code(), self.seq.code());
+        let mut s = format!(
+            "{:>06}{}{:>03}",
+            self.div.code,
+            self.birth.code(),
+            self.seq.code()
+        );
 
         let chk_idx: usize =
             s.chars()

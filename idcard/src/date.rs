@@ -1,6 +1,6 @@
-use chrono::{Local, NaiveDate, TimeZone, Datelike, Weekday};
-use std::string::String;
+use chrono::{Datelike, Local, NaiveDate, TimeZone, Weekday};
 use std::str::FromStr;
+use std::string::String;
 
 /// 代表公民身份号码公民出生日期的结构体，只有根据常识有效日期才能被转换。
 #[derive(Debug, PartialEq, Eq)]
@@ -111,17 +111,26 @@ mod test {
 
     #[test]
     fn test_string_parse_error() {
-        assert_eq!("1x900101".parse::<Date>().unwrap_err(), InvalidDate::StrParseError);
+        assert_eq!(
+            "1x900101".parse::<Date>().unwrap_err(),
+            InvalidDate::StrParseError
+        );
     }
 
     #[test]
     fn test_too_old_date() {
-        assert_eq!("18991231".parse::<Date>().unwrap_err(), InvalidDate::TooOldDate);
+        assert_eq!(
+            "18991231".parse::<Date>().unwrap_err(),
+            InvalidDate::TooOldDate
+        );
     }
 
     #[test]
     fn test_uncome_date() {
-        assert_eq!("99991231".parse::<Date>().unwrap_err(), InvalidDate::UncomeDate);
+        assert_eq!(
+            "99991231".parse::<Date>().unwrap_err(),
+            InvalidDate::UncomeDate
+        );
     }
 
     #[test]
