@@ -3,8 +3,7 @@
 use gb2260::Division;
 use std::str::FromStr;
 
-use crate::utils::Seq;
-use crate::Date;
+use crate::Birth;
 
 const IDNUMBER_LENGTH: usize = 18;
 const WEIGHTS: [u8; 17] = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
@@ -24,7 +23,7 @@ pub struct IdentityNumber {
     div: Division,
 
     // 出生日期
-    birth: Date,
+    birth: Birth,
 
     // 出生顺序号
     seq: Seq,
@@ -41,7 +40,7 @@ pub enum InvalidId {
 
     /// 正常人类寿命一般不超过 120年，因此不会还有 1900 年之前出生的老者
     /// 另外也不可能超过验证时出生。
-    InvalidBirthday(String),
+    InvalidBirth(String),
 
     /// 序列号格式不正确
     InvalidSeq(String),
@@ -68,10 +67,10 @@ impl FromStr for IdentityNumber {
             None => return Err(InvalidId::DivisionNotFound(div_code.to_owned())),
         };
 
-        let (birthday, rest) = rest.split_at(BIRTHDAY_LENGTH);
-        let birth = birthday
-            .parse::<Date>()
-            .map_err(|_| InvalidId::InvalidBirthday(birthday.to_owned()))?;
+        let (birth, rest) = rest.split_at(BIRTHDAY_LENGTH);
+        let birth = birth
+            .parse::<Birth>()
+            .map_err(|_| InvalidId::InvalidBirth(birth.to_owned()))?;
 
         let (seq, chk_code) = rest.split_at(SEQ_LENGTH);
         let seq = seq
@@ -98,6 +97,57 @@ impl FromStr for IdentityNumber {
         }
 
         Ok(IdentityNumber { div, birth, seq })
+    }
+}
+
+impl ToString for IdentityNumber {
+    fn to_string(&self) -> String {
+        let mut s = format!(
+            "{:>06}{}{:>03}",
+            self.div.code,
+            self.birth.code(),
+            self.seq.code()
+        );
+
+        let chk_idx: usize =
+            s.chars()
+                .take(IDNUMBER_LENGTH - 1)
+                .map(|chr| chr.to_digit(10).unwrap() as u8)
+                .zip(WEIGHTS.iter())
+                .fold(0u8, |acc, (d, w)| (acc + d * w) % ID_MODULE) as usize;
+        s.push(CHECK_CODE[chk_idx]);
+
+        s
+    }
+}
+
+#[derive(Debug, PartialEq)]
+pub(crate) struct Seq {
+    inner: u16,
+}
+
+#[derive(Debug, PartialEq)]
+pub enum InvalidSeq {
+    StrParseError,
+    Overflow(u16),
+}
+
+impl FromStr for Seq {
+    type Err = InvalidSeq;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let seq = s.parse::<u16>().map_err(|_| InvalidSeq::StrParseError)?;
+        if seq > 999 {
+            return Err(InvalidSeq::Overflow(seq));
+        }
+
+        Ok(Seq { inner: seq })
+    }
+}
+
+impl Seq {
+    pub fn code(&self) -> String {
+        format!("{:>03}", self.inner)
     }
 }
 
@@ -136,23 +186,23 @@ mod test {
     }
 
     #[test]
-    fn test_invalid_birthday() {
+    fn test_invalid_birth() {
         let wrong_format = "5101081972?5052137";
         assert_eq!(
             wrong_format.parse::<IdentityNumber>().unwrap_err(),
-            InvalidId::InvalidBirthday("1972?505".to_string())
+            InvalidId::InvalidBirth("1972?505".to_string())
         );
 
         let old_date = "510108187205052137";
         assert_eq!(
             old_date.parse::<IdentityNumber>().unwrap_err(),
-            InvalidId::InvalidBirthday("18720505".to_string())
+            InvalidId::InvalidBirth("18720505".to_string())
         );
 
         let upcoming = "510108297205052137";
         assert_eq!(
             upcoming.parse::<IdentityNumber>().unwrap_err(),
-            InvalidId::InvalidBirthday("29720505".to_string())
+            InvalidId::InvalidBirth("29720505".to_string())
         );
     }
 
@@ -194,32 +244,11 @@ mod test {
     fn test_valid_id() {
         let id = IdentityNumber {
             div: Division::get("510108").unwrap(),
-            birth: str::parse::<Date>("19720505").unwrap(),
+            birth: str::parse::<Birth>("19720505").unwrap(),
             seq: str::parse::<Seq>("213").unwrap(),
         };
 
         let valid_str = "510108197205052137";
         assert_eq!(valid_str.parse::<IdentityNumber>().unwrap(), id);
-    }
-}
-
-impl ToString for IdentityNumber {
-    fn to_string(&self) -> String {
-        let mut s = format!(
-            "{:>06}{}{:>03}",
-            self.div.code,
-            self.birth.code(),
-            self.seq.code()
-        );
-
-        let chk_idx: usize =
-            s.chars()
-                .take(IDNUMBER_LENGTH - 1)
-                .map(|chr| chr.to_digit(10).unwrap() as u8)
-                .zip(WEIGHTS.iter())
-                .fold(0u8, |acc, (d, w)| (acc + d * w) % ID_MODULE) as usize;
-        s.push(CHECK_CODE[chk_idx]);
-
-        s
     }
 }

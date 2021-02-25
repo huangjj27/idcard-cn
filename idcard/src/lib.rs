@@ -5,11 +5,11 @@
 //!
 //! [《中华人民共和国居民身份证法》]: http://www.gov.cn/zhengce/2011-10/29/content_2602263.htm
 
-mod date;
+mod birth;
 mod id;
 mod utils;
 
-pub use crate::date::Date;
+pub use crate::birth::Birth;
 pub use crate::id::{IdentityNumber, InvalidId};
 pub use crate::utils::Sex;
 
@@ -18,7 +18,7 @@ pub trait IdCard {
     // fn name(&self) -> Name;
     fn sex(&self) -> Sex;
     // fn ethnic(&self) -> EthnicGroup;
-    fn birthday(&self) -> Date;
+    fn birth(&self) -> Birth;
     // fn addr(&self) -> Addr;
     // fn signer(&self) -> Addr;
     // fn valid_time(&self) -> (String, String);
