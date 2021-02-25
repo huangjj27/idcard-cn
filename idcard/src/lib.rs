@@ -6,12 +6,14 @@
 //! [《中华人民共和国居民身份证法》]: http://www.gov.cn/zhengce/2011-10/29/content_2602263.htm
 
 mod birth;
+mod ethnic;
 mod id;
-mod utils;
+mod sex;
 
 pub use crate::birth::Birth;
+pub use crate::ethnic::EthnicGroup;
 pub use crate::id::{IdentityNumber, InvalidId};
-pub use crate::utils::Sex;
+pub use crate::sex::Sex;
 
 pub trait IdCard {
     fn id(&self) -> IdentityNumber;
