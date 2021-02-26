@@ -3,7 +3,13 @@ use std::str::FromStr;
 use std::string::String;
 
 /// 代表公民身份号码公民出生日期的结构体，只有根据常识有效日期才能被转换。
-#[derive(Debug, PartialEq, Eq)]
+///
+/// 常识1：[中国最长寿的人阿丽米罕老人] 于 1886 年 6 月 25日 出生, 因此不应该存在更长
+/// 寿的人
+/// 常识2：没有人能在执行日期的第二天或以后出生
+///
+/// [中国最长寿的人阿丽米罕老人]: https://new.qq.com/omn/20200531/20200531A08PF800.html
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct Birth {
     inner: NaiveDate,
 }
@@ -22,7 +28,7 @@ impl FromStr for Birth {
         let inner =
             NaiveDate::parse_from_str(s, "%Y%m%d").map_err(|_| InvalidBirth::StrParseError)?;
 
-        if inner < Local.ymd(1900, 1, 1).naive_local() {
+        if inner < Local.ymd(1886, 6, 25).naive_local() {
             return Err(InvalidBirth::TooOldDate);
         }
         if inner > Local::today().naive_local() {

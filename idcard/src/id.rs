@@ -17,7 +17,7 @@ const ID_MODULE: u8 = 11;
 /// 出生日期（8位数字）、 当日出生顺序号（3位数字），以及一位的校验码。
 ///
 /// 结构中不需要存校验码，只有合法的身份号码才能被转换成该结构体。
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct IdentityNumber {
     // 中华人民共和国国家标准 GB/T 2260 行政区划代码
     div: Division,
@@ -25,7 +25,7 @@ pub struct IdentityNumber {
     // 出生日期
     birth: Birth,
 
-    // 出生顺序号
+    // 出生顺序号。顺序号可以表示身份人 [性别](enum.Sex.html)，奇数为男性，偶数为女性
     seq: Seq,
 }
 
@@ -121,7 +121,21 @@ impl ToString for IdentityNumber {
     }
 }
 
-#[derive(Debug, PartialEq)]
+impl IdentityNumber {
+    pub fn div(&self) -> Division {
+        self.div.clone()
+    }
+
+    pub fn birth(&self) -> Birth {
+        self.birth
+    }
+
+    pub fn seq(&self) -> u16 {
+        self.seq.inner
+    }
+}
+
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub(crate) struct Seq {
     inner: u16,
 }

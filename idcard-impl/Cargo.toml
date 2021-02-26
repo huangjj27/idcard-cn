@@ -1,6 +1,6 @@
 [package]
 name = "idcard-cn-impl"
-version = "0.1.0"
+version = "0.0.1"
 authors = ["huangjj27 <huangjj.27@qq.com>"]
 license = "LGPL-2.1-or-later"
 edition = "2018"
