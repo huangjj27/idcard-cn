@@ -1,3 +1,4 @@
+/// 身份证持有人在出生时的生理性别
 #[derive(Copy, Clone)]
 pub enum Sex {
     Male,
