@@ -10,6 +10,8 @@ use std::string::ToString;
 /// [裕固族]、[京族]、[塔塔尔族]、[独龙族]、[鄂伦春族]、[赫哲族]、[门巴族]、[珞巴族]、
 /// [基诺族]共56个民族。
 ///
+/// 结构体变元（Variant）取名族名的无音标汉字拼音。
+///
 /// [汉族]: https://baike.baidu.com/item/汉族
 /// [满族]: https://baike.baidu.com/item/满族
 /// [蒙古族]: https://baike.baidu.com/item/蒙古族

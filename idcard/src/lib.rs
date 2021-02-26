@@ -15,11 +15,21 @@ pub use crate::ethnic::EthnicGroup;
 pub use crate::id::{IdentityNumber, InvalidId};
 pub use crate::sex::Sex;
 
+/// 中华人民共和国身份证应当提供的机读信息接口
 pub trait IdCard {
+    /// 公民身份号码
     fn id(&self) -> IdentityNumber;
+
+    /// 公民姓名
     // fn name(&self) -> Name;
+
+    /// 公民性别
     fn sex(&self) -> Sex;
-    // fn ethnic(&self) -> EthnicGroup;
+
+    /// 公民民族，包含 [中华民族 56 个民族](enum.EthnicGroup.html)
+    fn ethnic(&self) -> EthnicGroup;
+
+    /// 公民出生日期
     fn birth(&self) -> Birth;
     // fn addr(&self) -> Addr;
     // fn signer(&self) -> Addr;
