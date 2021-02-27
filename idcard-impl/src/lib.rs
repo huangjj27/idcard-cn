@@ -16,7 +16,7 @@ impl IdCard for IdCardV2 {
         match self.id.seq() % 2 {
             1 => Sex::Male,
             0 => Sex::Female,
-            _ => unreachable!("身份证上不应该存在男/女以外的第三种性别!")
+            _ => unreachable!("身份证上不应该存在男/女以外的第三种性别!"),
         }
     }
 

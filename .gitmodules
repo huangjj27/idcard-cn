@@ -1,0 +1,3 @@
+[submodule "gb2260"]
+	path = gb2260
+	url = git@github.com:huangjj27/GB2260.rs.git

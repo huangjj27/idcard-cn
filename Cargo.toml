@@ -2,7 +2,9 @@
 members = [
     "idcard",
     "idcard-impl",
+    "gb2260"
 ]
 
-[patch.crates-io.idcard-cn]
-path = "idcard"
+[patch.crates-io]
+idcard-cn = { path = "idcard" }
+gb2260 = { path = "gb2260" }

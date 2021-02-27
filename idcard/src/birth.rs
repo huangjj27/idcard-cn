@@ -28,7 +28,10 @@ impl FromStr for Birth {
         let inner =
             NaiveDate::parse_from_str(s, "%Y%m%d").map_err(|_| InvalidBirth::StrParseError)?;
 
-        if inner < Local.ymd(1886, 6, 25).naive_local() {
+        // TODO: 尽管根据常识，理应存在 1886-06-25 ~ 18990-2-31 出生并且健在的中国人，
+        // 但是由于 chrono::NaiveDate 只会记录 1900-01-01 之后的日期，因此暂时先忽略
+        // 1900-01-01 之前出生的人士，待到有需求的时候再改进。
+        if inner < Local.ymd(1900, 1, 1).naive_local() {
             return Err(InvalidBirth::TooOldDate);
         }
         if inner > Local::today().naive_local() {
