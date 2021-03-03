@@ -2,7 +2,8 @@
 members = [
     "idcard",
     "idcard-impl",
-    "gb2260"
+    "gb2260",
+    "gb2260/generator"
 ]
 
 [patch.crates-io]
