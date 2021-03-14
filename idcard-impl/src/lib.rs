@@ -1,10 +1,15 @@
+use std::todo;
+
 use idcard_cn::IdCard;
-use idcard_cn::{Birth, EthnicGroup, IdentityNumber, Sex};
+use idcard_cn::{Birth, EthnicGroup, IdentityNumber, Sex, Addr};
 
 /// 第二代中华人民共和国身份证
 pub struct IdCardV2 {
     id: IdentityNumber,
+    name: Name,
     ethnic: EthnicGroup,
+    addr: Addr,
+    signed_by: Addr,
 }
 
 impl IdCard for IdCardV2 {
@@ -26,5 +31,17 @@ impl IdCard for IdCardV2 {
 
     fn birth(&self) -> Birth {
         self.id.birth()
+    }
+
+    fn addr(&self) -> Addr {
+        self.addr
+    }
+
+    fn signer(&self) -> Addr {
+        self.signed_by
+    }
+
+    fn valid_time(&self) -> (String, String) {
+        todo!("需要进行简单的程序校验")
     }
 }

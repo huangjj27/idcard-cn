@@ -15,13 +15,16 @@ pub use crate::ethnic::EthnicGroup;
 pub use crate::id::{IdentityNumber, InvalidId};
 pub use crate::sex::Sex;
 
+// 暂时没有想好设计，姑且用字符串表示先
+pub type Name = String;
+pub type Addr = String;
 /// 中华人民共和国身份证应当提供的机读信息接口
 pub trait IdCard {
     /// 公民身份号码
     fn id(&self) -> IdentityNumber;
 
     /// 公民姓名
-    // fn name(&self) -> Name;
+    fn name(&self) -> Name;
 
     /// 公民性别
     fn sex(&self) -> Sex;
@@ -31,9 +34,9 @@ pub trait IdCard {
 
     /// 公民出生日期
     fn birth(&self) -> Birth;
-    // fn addr(&self) -> Addr;
-    // fn signer(&self) -> Addr;
-    // fn valid_time(&self) -> (String, String);
+    fn addr(&self) -> Addr;
+    fn signer(&self) -> Addr;
+    fn valid_time(&self) -> (String, String);
     // fn fringerprint(&self) -> FingerPrint;
     // fn picture(&self) -> Picture;
 }
