@@ -1,7 +1,7 @@
 use std::todo;
 
 use idcard_cn::IdCard;
-use idcard_cn::{Birth, EthnicGroup, IdentityNumber, Sex, Addr};
+use idcard_cn::{Birth, EthnicGroup, IdentityNumber, Sex, Addr, Name};
 
 /// 第二代中华人民共和国身份证
 pub struct IdCardV2 {
@@ -15,6 +15,10 @@ pub struct IdCardV2 {
 impl IdCard for IdCardV2 {
     fn id(&self) -> IdentityNumber {
         self.id.clone()
+    }
+
+    fn name(&self) -> Name {
+        self.name.clone()
     }
 
     fn sex(&self) -> Sex {
