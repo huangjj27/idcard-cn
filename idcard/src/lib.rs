@@ -35,8 +35,14 @@ pub trait IdCard {
 
     /// 公民出生日期
     fn birth(&self) -> Birth;
+
+    /// 常住户口所在地住址
     fn addr(&self) -> Addr;
+
+    /// 签发机关
     fn signer(&self) -> Addr;
+
+    /// 证件有效期
     fn valid_time(&self) -> (String, String);
     // fn fringerprint(&self) -> FingerPrint;
     // fn picture(&self) -> Picture;
