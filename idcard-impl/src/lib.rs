@@ -38,11 +38,11 @@ impl IdCard for IdCardV2 {
     }
 
     fn addr(&self) -> Addr {
-        self.addr
+        self.addr.clone()
     }
 
     fn signer(&self) -> Addr {
-        self.signed_by
+        self.signed_by.clone()
     }
 
     fn valid_time(&self) -> (String, String) {
