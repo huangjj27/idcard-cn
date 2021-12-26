@@ -13,10 +13,12 @@ const BIRTHDAY_LENGTH: usize = 8;
 const SEQ_LENGTH: usize = 3;
 const ID_MODULE: u8 = 11;
 
-/// 第二代中华人民共和国身份证公民身份号码。包括身份证持有人出生时行政区划分代码（6位数字）、
+/// 第二代中华人民共和国身份证公民身份号码。包括身份证持有人出生时[行政区划分代码（6位数字）][division]、
 /// 出生日期（8位数字）、当日出生顺序号（3位数字），以及一位的校验码。
 ///
 /// 结构中不需要存校验码，只有合法的身份号码才能被转换成该结构体。
+///
+/// [division]: http://www.mca.gov.cn/article/sj/xzqh/1980/
 #[derive(Clone, Debug, PartialEq)]
 pub struct IdentityNumber {
     /// 中华人民共和国国家标准 GB/T 2260 行政区划代码
