@@ -62,15 +62,29 @@ impl FromStr for IdentityNumber {
         }
 
         let (div_code, rest) = s.split_at(DIV_CODE_LENGTH);
-        let div = match Division::get(div_code) {
-            Some(d) => d,
-            None => return Err(InvalidId::DivisionNotFound(div_code.to_owned())),
-        };
 
         let (birth, rest) = rest.split_at(BIRTHDAY_LENGTH);
         let birth = birth
             .parse::<Birth>()
             .map_err(|_| InvalidId::InvalidBirth(birth.to_owned()))?;
+
+        // 区域行政编码为身份持有人出生当年的行政编码，因此需要解析出合法的出生日期后才
+        // 能开始解析区域行政编码。
+        let birth_year = birth.year();
+        let div_opt = if birth_year >= 1980 {
+            // 由于 gb2260 只有1980年以后的数据，因此只有1980年以后出生的身份持有人
+            // 才能根据出生年份查询准确的当年行政区的编码
+            let revision = birth_year.to_string() + "12";
+            Division::get_by_revision(div_code, &revision)
+        } else {
+            // 1980年以前出生的省份持有人只能碰运气在所有的行政编码版本中遍历查找
+            Division::search(div_code)
+        };
+
+        let div = match div_opt {
+            Some(d) => d,
+            None => return Err(InvalidId::DivisionNotFound(div_code.to_owned())),
+        };
 
         let (seq, chk_code) = rest.split_at(SEQ_LENGTH);
         let seq = seq
