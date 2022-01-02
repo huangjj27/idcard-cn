@@ -15,7 +15,7 @@ pub use crate::ethnic::EthnicGroup;
 pub use crate::id::{IdentityNumber, InvalidId};
 pub use crate::sex::Sex;
 
-// TODO: 暂时没有想好设计，姑且用字符串表示先
+//TODO: 暂时没有想好设计，姑且用字符串表示先
 pub type Name = String;
 pub type Addr = String;
 
@@ -36,14 +36,18 @@ pub trait IdCard {
     /// 公民出生日期
     fn birth(&self) -> Birth;
 
-    /// 常住户口所在地住址
+    /// 公民常住户口所在地住址
     fn addr(&self) -> Addr;
 
-    /// 签发机关
+    /// 身份证证件签发机关
     fn signer(&self) -> Addr;
 
-    /// 证件有效期
+    /// 身份证证件有效期
     fn valid_time(&self) -> (String, String);
+
+    // 公民指纹信息
     // fn fringerprint(&self) -> FingerPrint;
+
+    // 公民照片
     // fn picture(&self) -> Picture;
 }
