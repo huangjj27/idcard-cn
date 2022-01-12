@@ -13,11 +13,11 @@ const BIRTHDAY_LENGTH: usize = 8;
 const SEQ_LENGTH: usize = 3;
 const ID_MODULE: u8 = 11;
 
-/// 第二代中华人民共和国身份证公民身份号码。包括身份证持有人出生时[行政区划分代码（6位数字）][division]、
-/// 出生日期（8位数字）、当日出生顺序号（3位数字），以及一位的校验码。
+/// 第二代中华人民共和国身份证公民身份号码（[GB 11643-1999]）。
 ///
 /// 结构中不需要存校验码，只有合法的身份号码才能被转换成该结构体。
 ///
+/// [GB 11643-1999]: http://www.gb688.cn/bzgk/gb/newGbInfo?hcno=080D6FBF2BB468F9007657F26D60013E
 /// [division]: http://www.mca.gov.cn/article/sj/xzqh/1980/
 #[derive(Clone, Debug, PartialEq)]
 pub struct IdentityNumber {
@@ -27,7 +27,7 @@ pub struct IdentityNumber {
     /// 八位出生日期，格式YYYYMMDD
     birth: Birth,
 
-    /// 出生顺序号。顺序号可以表示身份人 [性别](enum.Sex.html)，奇数为男性，偶数为女性
+    /// 出生顺序号。顺序号可以表示身份人 [性别](enum.Sex)，奇数为男性，偶数为女性
     seq: Seq,
 }
 
@@ -178,6 +178,25 @@ impl FromStr for Seq {
 impl Seq {
     pub fn code(&self) -> String {
         format!("{:>03}", self.inner)
+    }
+}
+
+/// 身份持有人的性别
+///
+/// 这里包含的基本假设是，一个人的性别从出生开始就不会变化，尽管现代提供了变化性别的手段。
+/// 因此，身份证上的性别按照常理以身份持有人出生时的生理性别为准，划分为男性和女性
+#[derive(Copy, Clone)]
+pub enum Sex {
+    Male,
+    Female,
+}
+
+impl ToString for Sex {
+    fn to_string(&self) -> String {
+        match *self {
+            Sex::Male => "男".to_owned(),
+            Sex::Female => "女".to_owned(),
+        }
     }
 }
 
