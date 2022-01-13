@@ -54,7 +54,7 @@ dependencies = [
 
 [[package]]
 name = "idcard-cn"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "chrono",
  "gb2260",

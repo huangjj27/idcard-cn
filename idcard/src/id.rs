@@ -159,6 +159,7 @@ pub(crate) struct Seq {
 #[derive(Debug, PartialEq)]
 pub enum InvalidSeq {
     StrParseError,
+    ShouldNotBeZero,
     Overflow(u16),
 }
 
@@ -167,6 +168,13 @@ impl FromStr for Seq {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let seq = s.parse::<u16>().map_err(|_| InvalidSeq::StrParseError)?;
+        
+        // 相同出生地区、相同出生日期的公民，其身份号码出生序列号从 1 开始
+        if seq == 0 {
+            return Err(InvalidSeq::ShouldNotBeZero);
+        }
+
+        // 目前身份证设定相同地区、相同日期出生的公民计数不超过 999 个人
         if seq > 999 {
             return Err(InvalidSeq::Overflow(seq));
         }
@@ -261,6 +269,12 @@ mod test {
         assert_eq!(
             wrong_format.parse::<IdentityNumber>().unwrap_err(),
             InvalidId::InvalidSeq("21$".to_string())
+        );
+
+        let zero_seq =  "510108197205050007";
+        assert_eq!(
+            zero_seq.parse::<IdentityNumber>().unwrap_err(),
+            InvalidId::InvalidSeq("000".to_string())
         );
     }
 
