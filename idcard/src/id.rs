@@ -13,11 +13,11 @@ const BIRTHDAY_LENGTH: usize = 8;
 const SEQ_LENGTH: usize = 3;
 const ID_MODULE: u8 = 11;
 
-/// 第二代中华人民共和国身份证公民身份号码。包括身份证持有人出生时[行政区划分代码（6位数字）][division]、
-/// 出生日期（8位数字）、当日出生顺序号（3位数字），以及一位的校验码。
+/// 第二代中华人民共和国身份证公民身份号码（[GB 11643-1999]）。
 ///
 /// 结构中不需要存校验码，只有合法的身份号码才能被转换成该结构体。
 ///
+/// [GB 11643-1999]: http://www.gb688.cn/bzgk/gb/newGbInfo?hcno=080D6FBF2BB468F9007657F26D60013E
 /// [division]: http://www.mca.gov.cn/article/sj/xzqh/1980/
 #[derive(Clone, Debug, PartialEq)]
 pub struct IdentityNumber {
@@ -27,7 +27,7 @@ pub struct IdentityNumber {
     /// 八位出生日期，格式YYYYMMDD
     birth: Birth,
 
-    /// 出生顺序号。顺序号可以表示身份人 [性别](enum.Sex.html)，奇数为男性，偶数为女性
+    /// 出生顺序号。顺序号可以表示身份人 [性别](enum.Sex)，奇数为男性，偶数为女性
     seq: Seq,
 }
 
@@ -159,6 +159,7 @@ pub(crate) struct Seq {
 #[derive(Debug, PartialEq)]
 pub enum InvalidSeq {
     StrParseError,
+    ShouldNotBeZero,
     Overflow(u16),
 }
 
@@ -167,6 +168,13 @@ impl FromStr for Seq {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let seq = s.parse::<u16>().map_err(|_| InvalidSeq::StrParseError)?;
+        
+        // 相同出生地区、相同出生日期的公民，其身份号码出生序列号从 1 开始
+        if seq == 0 {
+            return Err(InvalidSeq::ShouldNotBeZero);
+        }
+
+        // 目前身份证设定相同地区、相同日期出生的公民计数不超过 999 个人
         if seq > 999 {
             return Err(InvalidSeq::Overflow(seq));
         }
@@ -242,6 +250,12 @@ mod test {
         assert_eq!(
             wrong_format.parse::<IdentityNumber>().unwrap_err(),
             InvalidId::InvalidSeq("21$".to_string())
+        );
+
+        let zero_seq =  "510108197205050007";
+        assert_eq!(
+            zero_seq.parse::<IdentityNumber>().unwrap_err(),
+            InvalidId::InvalidSeq("000".to_string())
         );
     }
 
