@@ -21,10 +21,10 @@ pub enum Sex {
 impl AsRef<str> for Sex {
     fn as_ref(&self) -> &str {
         match *self {
-            Unknown => "未知的性别",
-            Male => "男性",
-            Female => "女性",
-            Unspecified => "未说明的性别",
+            Sex::Unknown => "未知的性别",
+            Sex::Male => "男性",
+            Sex::Female => "女性",
+            Sex::Unspecified => "未说明的性别",
         }
     }
 }
