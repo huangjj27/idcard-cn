@@ -8,10 +8,12 @@
 mod birth;
 mod ethnic;
 mod id;
+mod sex;
 
 pub use crate::birth::Birth;
 pub use crate::ethnic::EthnicGroup;
-pub use crate::id::{IdentityNumber, InvalidId, Sex};
+pub use crate::id::{IdentityNumber, InvalidId};
+pub use crate::sex::Sex;
 
 //TODO: 暂时没有想好设计，姑且用字符串表示先
 pub type Name = String;
