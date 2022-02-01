@@ -6,13 +6,14 @@
 //! [《中华人民共和国居民身份证法》]: http://www.gov.cn/zhengce/2011-10/29/content_2602263.htm
 
 mod birth;
-mod ethnic;
+mod ethnicity;
 mod id;
 mod sex;
 
+use id::IdentificationNumber;
+
 pub use crate::birth::Birth;
-pub use crate::ethnic::EthnicGroup;
-pub use crate::id::{IdentityNumber, InvalidId};
+pub use crate::ethnicity::Ethnicity;
 pub use crate::sex::Sex;
 
 //TODO: 暂时没有想好设计，姑且用字符串表示先
@@ -21,33 +22,42 @@ pub type Addr = String;
 
 /// 中华人民共和国身份证应当提供的机读信息接口
 pub trait IdCard {
+    type IdentificationNumber: Identity;
+    type Name;
+    type Gender;
+    type Ethnicity;
+    type Date;
+    type Addr;
+    type FingerPrint;
+    type Picture;
+
     /// 公民身份号码
-    fn id(&self) -> IdentityNumber;
+    fn id(&self) -> Self::IdentificationNumber;
 
     /// 公民姓名
-    fn name(&self) -> Name;
+    fn name(&self) -> Self::Name;
 
     /// 公民性别
-    fn sex(&self) -> Sex;
+    fn gender(&self) -> Self::Gender;
 
-    /// 公民民族，包含 [中华民族 56 个民族](enum.EthnicGroup.html)
-    fn ethnic(&self) -> EthnicGroup;
+    /// 公民民族，包含 [中华民族 56 个民族](enum.Ethnicity.html)
+    fn ethnicity(&self) -> Self::Ethnicity;
 
     /// 公民出生日期
-    fn birth(&self) -> Birth;
+    fn birthday(&self) -> Self::Date;
 
     /// 公民常住户口所在地住址
-    fn addr(&self) -> Addr;
+    fn addr(&self) -> Self::Addr;
 
     /// 身份证证件签发机关
-    fn signer(&self) -> Addr;
+    fn authority(&self) -> Self::Addr;
 
     /// 身份证证件有效期
-    fn valid_time(&self) -> (String, String);
+    fn valid_time(&self) -> (Self::Date, Self::Date);
 
     // 公民指纹信息
-    // fn fringerprint(&self) -> FingerPrint;
+    // fn fringerprint(&self) -> Self::FingerPrint;
 
     // 公民照片
-    // fn picture(&self) -> Picture;
+    // fn picture(&self) -> Self::Picture;
 }

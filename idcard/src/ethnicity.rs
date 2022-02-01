@@ -1,5 +1,6 @@
 use std::string::ToString;
-/// 中华人民共和国中华民族
+
+/// 中华人民共和国中华民族，编码依据标准 [GB 3304-1991] 中的罗马字母拼写法。
 ///
 /// 经过民族识别，现今的中华民族包括[汉族]、[满族]、[蒙古族]、[回族]、[藏族]、[维吾尔族]、
 /// [苗族]、[彝族]、[壮族]、[布依族]、[侗族]、[瑶族]、[白族]、[土家族]、[哈尼族]、
@@ -10,7 +11,9 @@ use std::string::ToString;
 /// [裕固族]、[京族]、[塔塔尔族]、[独龙族]、[鄂伦春族]、[赫哲族]、[门巴族]、[珞巴族]、
 /// [基诺族]共56个民族。
 ///
-/// 结构体变元（Variant）取名族名的无音标汉字拼音。
+/// 另，GB 3304-1991 文档中对民族的翻译 “nationality” 在对外场景中更多表示为国籍含义，
+/// 为避免歧义，本仓库使用 “ethnicity” 来翻译。
+/// [GB 3304-1991]: http://c.gb688.cn/bzgk/gb/showGb?type=online&hcno=E5C3271B62636C5DA6853A0DA23EBBA9
 ///
 /// [汉族]: https://baike.baidu.com/item/汉族
 /// [满族]: https://baike.baidu.com/item/满族
@@ -68,125 +71,16 @@ use std::string::ToString;
 /// [门巴族]: https://baike.baidu.com/item/门巴族
 /// [珞巴族]: https://baike.baidu.com/item/珞巴族
 /// [基诺族]: https://baike.baidu.com/item/基诺族
-#[derive(Copy, Clone)]
-pub enum EthnicGroup {
-    Han,
-    Man,
-    MengGu,
-    Hui,
-    Zang,
-    WeiWuEr,
-    Miao,
-    Yi,
-    Zhuang,
-    BuYi,
-    Dong,
-    Yao,
-    Bai,
-    TuJia,
-    HaNi,
-    HaSaKe,
-    Dai,
-    Li,
-    LiSu,
-    Wa,
-    She,
-    GaoShan,
-    LaHu,
-    Shui,
-    DongXiang,
-    NaXi,
-    JingPo,
-    KeErKeZi,
-    Tu,
-    DaWoEr,
-    MuLao,
-    Qiang,
-    BuLang,
-    SaLa,
-    MaoNan,
-    GeLao,
-    XiBo,
-    AChang,
-    PuMi,
-    ChaoXian,
-    TaJiKe,
-    Nu,
-    WuZiBieKe,
-    ELuoSi,
-    EWenKe,
-    DeAng,
-    BaoAn,
-    YuGu,
-    Jing,
-    TaTaEr,
-    DuLong,
-    ELunChun,
-    HeZhe,
-    MenBa,
-    LuoBa,
-    JiNuo,
-}
+pub trait Ethnicity: AsRef<str> {
+    /// 数字代码
+    const NUMBER: u8;
 
-impl ToString for EthnicGroup {
-    fn to_string(&self) -> String {
-        match *self {
-            EthnicGroup::Han => "汉".to_owned(),
-            EthnicGroup::Man => "满".to_owned(),
-            EthnicGroup::MengGu => "蒙古".to_owned(),
-            EthnicGroup::Hui => "回".to_owned(),
-            EthnicGroup::Zang => "藏".to_owned(),
-            EthnicGroup::WeiWuEr => "维吾尔".to_owned(),
-            EthnicGroup::Miao => "苗".to_owned(),
-            EthnicGroup::Yi => "彝".to_owned(),
-            EthnicGroup::Zhuang => "壮".to_owned(),
-            EthnicGroup::BuYi => "布依".to_owned(),
-            EthnicGroup::Dong => "侗".to_owned(),
-            EthnicGroup::Yao => "瑶".to_owned(),
-            EthnicGroup::Bai => "白".to_owned(),
-            EthnicGroup::TuJia => "土家".to_owned(),
-            EthnicGroup::HaNi => "哈尼".to_owned(),
-            EthnicGroup::HaSaKe => "哈萨克".to_owned(),
-            EthnicGroup::Dai => "傣".to_owned(),
-            EthnicGroup::Li => "黎".to_owned(),
-            EthnicGroup::LiSu => "傈僳".to_owned(),
-            EthnicGroup::Wa => "佤".to_owned(),
-            EthnicGroup::She => "畲".to_owned(),
-            EthnicGroup::GaoShan => "高山".to_owned(),
-            EthnicGroup::LaHu => "拉祜".to_owned(),
-            EthnicGroup::Shui => "水".to_owned(),
-            EthnicGroup::DongXiang => "东乡".to_owned(),
-            EthnicGroup::NaXi => "纳西".to_owned(),
-            EthnicGroup::JingPo => "景颇".to_owned(),
-            EthnicGroup::KeErKeZi => "柯尔克孜".to_owned(),
-            EthnicGroup::Tu => "土".to_owned(),
-            EthnicGroup::DaWoEr => "达斡尔".to_owned(),
-            EthnicGroup::MuLao => "仫佬".to_owned(),
-            EthnicGroup::Qiang => "羌".to_owned(),
-            EthnicGroup::BuLang => "布朗".to_owned(),
-            EthnicGroup::SaLa => "撒拉".to_owned(),
-            EthnicGroup::MaoNan => "毛南".to_owned(),
-            EthnicGroup::GeLao => "仡佬".to_owned(),
-            EthnicGroup::XiBo => "锡伯".to_owned(),
-            EthnicGroup::AChang => "阿昌".to_owned(),
-            EthnicGroup::PuMi => "普米".to_owned(),
-            EthnicGroup::ChaoXian => "朝鲜".to_owned(),
-            EthnicGroup::TaJiKe => "塔吉克".to_owned(),
-            EthnicGroup::Nu => "怒".to_owned(),
-            EthnicGroup::WuZiBieKe => "乌兹别克".to_owned(),
-            EthnicGroup::ELuoSi => "俄罗斯".to_owned(),
-            EthnicGroup::EWenKe => "鄂温克".to_owned(),
-            EthnicGroup::DeAng => "德昂".to_owned(),
-            EthnicGroup::BaoAn => "保安族".to_owned(),
-            EthnicGroup::YuGu => "裕固".to_owned(),
-            EthnicGroup::Jing => "京".to_owned(),
-            EthnicGroup::TaTaEr => "塔塔尔".to_owned(),
-            EthnicGroup::DuLong => "独龙".to_owned(),
-            EthnicGroup::ELunChun => "鄂伦春".to_owned(),
-            EthnicGroup::HeZhe => "赫哲".to_owned(),
-            EthnicGroup::MenBa => "门巴".to_owned(),
-            EthnicGroup::LuoBa => "珞巴".to_owned(),
-            EthnicGroup::JiNuo => "基诺".to_owned(),
-        }
-    }
+    /// 罗马字母拼写法
+    const ROMAN: &'static str;
+
+    /// 字母代码
+    const SHORT: &'static str;
+
+    /// 民族名称
+    const NAME: &'static str;
 }
