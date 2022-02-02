@@ -6,14 +6,14 @@
 //! [《中华人民共和国居民身份证法》]: http://www.gov.cn/zhengce/2011-10/29/content_2602263.htm
 
 mod birth;
-mod ethnicity;
+mod ethnic;
 mod id;
 mod sex;
 
-use id::IdentificationNumber;
+use id::Identity;
 
 pub use crate::birth::Birth;
-pub use crate::ethnicity::Ethnicity;
+pub use crate::ethnic::Ethnic;
 pub use crate::sex::Sex;
 
 //TODO: 暂时没有想好设计，姑且用字符串表示先
@@ -24,8 +24,8 @@ pub type Addr = String;
 pub trait IdCard {
     type IdentificationNumber: Identity;
     type Name;
-    type Gender;
-    type Ethnicity;
+    type Gender: Sex;
+    type Ethnicity: Ethnic;
     type Date;
     type Addr;
     type FingerPrint;

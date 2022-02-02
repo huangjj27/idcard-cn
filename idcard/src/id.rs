@@ -19,10 +19,14 @@ const ID_MODULE: u8 = 11;
 ///
 /// [GB 11643-1999]: http://www.gb688.cn/bzgk/gb/newGbInfo?hcno=080D6FBF2BB468F9007657F26D60013E
 /// [division]: http://www.mca.gov.cn/article/sj/xzqh/1980/
-pub trait IdentificationNumber: FromStr + ToString + Birth + Sex {
+pub trait Identity: FromStr + ToString {
     type Div;
     type Birthday;
     type Seq;
+
+    fn div(&self) -> Self::Div;
+    fn birth(&self) -> Self::Birthday;
+    fn seq(&self) -> Self::Seq;
 }
 
 // #[derive(Clone, Debug, PartialEq)]

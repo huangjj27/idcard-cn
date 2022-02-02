@@ -7,8 +7,8 @@ use std::convert::AsRef;
 ///
 /// [GB/T 2261.1-2003]: http://c.gb688.cn/bzgk/gb/showGb?type=online&hcno=0FC942D542BC6EE3C707B2647EF81CD8
 pub trait Sex: AsRef<str> {
-    const CODE: u8;
-    const TYPE: &'static str;
+    type Code;
+    type Desc;
 }
 
 // #[derive(Copy, Clone)]

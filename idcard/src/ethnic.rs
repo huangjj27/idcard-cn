@@ -1,6 +1,4 @@
-use std::string::ToString;
-
-/// 中华人民共和国中华民族，编码依据标准 [GB 3304-1991] 中的罗马字母拼写法。
+/// 中华人民共和国中华民族接口，编码依据标准 [GB 3304-1991] 中的罗马字母拼写法。
 ///
 /// 经过民族识别，现今的中华民族包括[汉族]、[满族]、[蒙古族]、[回族]、[藏族]、[维吾尔族]、
 /// [苗族]、[彝族]、[壮族]、[布依族]、[侗族]、[瑶族]、[白族]、[土家族]、[哈尼族]、
@@ -12,9 +10,9 @@ use std::string::ToString;
 /// [基诺族]共56个民族。
 ///
 /// 另，GB 3304-1991 文档中对民族的翻译 “nationality” 在对外场景中更多表示为国籍含义，
-/// 为避免歧义，本仓库使用 “ethnicity” 来翻译。
-/// [GB 3304-1991]: http://c.gb688.cn/bzgk/gb/showGb?type=online&hcno=E5C3271B62636C5DA6853A0DA23EBBA9
+/// 为避免歧义，本仓库使用 “ethnicity” 与 “ethnic" 来翻译。
 ///
+/// [GB 3304-1991]: http://c.gb688.cn/bzgk/gb/showGb?type=online&hcno=E5C3271B62636C5DA6853A0DA23EBBA9
 /// [汉族]: https://baike.baidu.com/item/汉族
 /// [满族]: https://baike.baidu.com/item/满族
 /// [蒙古族]: https://baike.baidu.com/item/蒙古族
@@ -71,16 +69,21 @@ use std::string::ToString;
 /// [门巴族]: https://baike.baidu.com/item/门巴族
 /// [珞巴族]: https://baike.baidu.com/item/珞巴族
 /// [基诺族]: https://baike.baidu.com/item/基诺族
-pub trait Ethnicity: AsRef<str> {
+pub trait Ethnic {
+    type Code;
+    type Name;
+    type RomanCode;
+    type ShortCode;
+
     /// 数字代码
-    const NUMBER: u8;
-
-    /// 罗马字母拼写法
-    const ROMAN: &'static str;
-
-    /// 字母代码
-    const SHORT: &'static str;
+    fn code(&self) -> Self::Code;
 
     /// 民族名称
-    const NAME: &'static str;
+    fn name(&self) -> Self::Name;
+
+    /// 罗马字母拼写法
+    fn roman(&self) -> Self::RomanCode;
+
+    /// 字母代码
+    fn short(&self) -> Self::ShortCode;
 }
