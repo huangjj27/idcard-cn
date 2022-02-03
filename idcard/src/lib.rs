@@ -1,7 +1,7 @@
 //! [《中华人民共和国居民身份证法》] 第三条：
 //! > 居民身份证登记的项目包括：姓名、性别、民族、出生日期、常住户口所在地住址、公民身份号码、本人相片、指纹信息、证件的有效期和签发机关。
 //!
-//! 本仓库根据以上要求提供相关信息的读取接口。
+//! 本仓库根据以上要求，以及根据中华人民共和国公共行业标准 GA/T 490-2019, 设计接口。
 //!
 //! [《中华人民共和国居民身份证法》]: http://www.gov.cn/zhengce/2011-10/29/content_2602263.htm
 
@@ -10,17 +10,12 @@ mod ethnic;
 mod id;
 mod sex;
 
-use id::Identity;
-
+pub use id::Identity;
 pub use crate::birth::Birth;
 pub use crate::ethnic::Ethnic;
 pub use crate::sex::Sex;
 
-//TODO: 暂时没有想好设计，姑且用字符串表示先
-pub type Name = String;
-pub type Addr = String;
-
-/// 中华人民共和国身份证应当提供的机读信息接口
+/// 中华人民共和国身份证应当提供的机读信息接口，依据标准 GA/T 490-2019。
 pub trait IdCard {
     type IdentificationNumber: Identity;
     type Name;

@@ -5,7 +5,7 @@ use std::convert::AsRef;
 /// 这里包含的基本假设是，一个人的性别从出生开始就不会变化，尽管现代提供了变化性别的手段。
 /// 因此，身份证上的性别按照常理以身份持有人出生时的生理性别为准，划分为男性和女性。
 ///
-/// [GB/T 2261.1-2003]: http://c.gb688.cn/bzgk/gb/showGb?type=online&hcno=0FC942D542BC6EE3C707B2647EF81CD8
+/// [GB/T 2261.1-2003]: http://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=0FC942D542BC6EE3C707B2647EF81CD8
 pub trait Sex: AsRef<str> {
     type Code;
     type Desc;
