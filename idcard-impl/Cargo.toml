@@ -9,3 +9,5 @@ edition = "2021"
 
 [dependencies]
 idcard-cn = "0.0.2"
+gb2260 = "0.1.2"
+chrono = "0.4.19"

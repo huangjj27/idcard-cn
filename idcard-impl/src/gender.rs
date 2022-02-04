@@ -1,7 +1,7 @@
 use idcard_cn::Sex;
 
-type GenderCode = u8;
-type GenderDesc = &'static str;
+pub type GenderCode = u8;
+pub type GenderDesc = &'static str;
 
 const GENDER_LIST: [(GenderCode, GenderDesc); 4] = [
     (0, "未知的性别"),
@@ -15,7 +15,7 @@ const GENDER_LIST: [(GenderCode, GenderDesc); 4] = [
 /// 计算过程中只需要保留性别代码。
 ///
 /// [GB/T 2261.1-2003]: http://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=0FC942D542BC6EE3C707B2647EF81CD8
-struct Gender(GenderCode);
+pub struct Gender(GenderCode);
 
 impl Gender {
     pub fn from_code(c: GenderCode) -> Result<Self, &'static str> {
