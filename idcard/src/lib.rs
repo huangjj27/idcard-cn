@@ -5,13 +5,11 @@
 //!
 //! [《中华人民共和国居民身份证法》]: http://www.gov.cn/zhengce/2011-10/29/content_2602263.htm
 
-mod birth;
 mod ethnic;
 mod id;
 mod sex;
 
-pub use id::Identity;
-pub use crate::birth::Birth;
+pub use crate::id::Identity;
 pub use crate::ethnic::Ethnic;
 pub use crate::sex::Sex;
 
