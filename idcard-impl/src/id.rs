@@ -1,5 +1,8 @@
 use gb2260::Division;
+use idcard_cn::Identity;
+
 use std::str::FromStr;
+
 use crate::birth::Birth;
 
 const IDNUMBER_LENGTH: usize = 18;
@@ -70,7 +73,7 @@ impl FromStr for IdentificationNumber {
             let revision = birth_year.to_string() + "12";
             Division::get_by_revision(div_code, &revision)
         } else {
-            // 1980年以前出生的省份持有人只能碰运气在所有的行政编码版本中遍历查找
+            // 1980年以前出生的身份持有人只能碰运气在所有的行政编码版本中遍历查找
             Division::search(div_code)
         };
 
@@ -128,22 +131,48 @@ impl ToString for IdentificationNumber {
     }
 }
 
-impl IdentificationNumber {
-    pub fn div(&self) -> Division {
+impl Identity for IdentificationNumber {
+    type Division = gb2260::Division;
+    type Birthday = Birth;
+    type Sequence = Seq;
+    type Checksum = char;
+
+    fn division(&self) -> Self::Division {
         self.div.clone()
     }
 
-    pub fn birth(&self) -> Birth {
+    fn birthday(&self) -> Self::Birthday {
         self.birth
     }
 
-    pub fn seq(&self) -> u16 {
-        self.seq.inner
+    fn sequence(&self) -> Self::Sequence {
+        self.seq
+    }
+
+    //TODO: 优化校验过程
+    // 每次查询校验码均需要重复生成字符串的开销比较大，是否可以在构造身份号码对象时保存
+    // 相关信息？
+    fn checksum(&self) -> Self::Checksum {
+        let s = format!(
+            "{:>06}{}{:>03}",
+            self.div.code,
+            self.birth.code(),
+            self.seq.code()
+        );
+
+        let chk_idx: usize =
+            s.chars()
+                .take(IDNUMBER_LENGTH - 1)
+                .map(|chr| chr.to_digit(10).unwrap() as u8)
+                .zip(WEIGHTS.iter())
+                .fold(0u8, |acc, (d, w)| (acc + d * w) % ID_MODULE) as usize;
+
+        CHECK_CODE[chk_idx]
     }
 }
 
 #[derive(Copy, Clone, Debug, PartialEq)]
-pub(crate) struct Seq {
+pub struct Seq {
     inner: u16,
 }
 
