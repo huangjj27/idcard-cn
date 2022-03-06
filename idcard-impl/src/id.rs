@@ -90,6 +90,7 @@ impl FromStr for IdentificationNumber {
             .parse::<Seq>()
             .map_err(|_| InvalidId::InvalidSeq(seq.to_owned()))?;
 
+        // 在前面的逻辑中，优先对身份号码长度进行了判断，因此一定会找到唯一的校验码字符。
         let chk_code = match chk_code.chars().next() {
             Some(chr) if CHECK_CODE.contains(&chr) => chr,
             Some(chr) if !CHECK_CODE.contains(&chr) => {
