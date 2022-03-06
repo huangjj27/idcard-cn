@@ -23,6 +23,9 @@ pub struct IdentificationNumber {
 
     /// 出生顺序号。顺序号可以表示身份人 [性别](enum.Sex)，奇数为男性，偶数为女性
     seq: Seq,
+
+    // 验证码索引，存储该索引以快速校验
+    chk_idx: usize,
 }
 
 /// 通常违反身份号码校验规则的错误
@@ -106,7 +109,7 @@ impl FromStr for IdentificationNumber {
             return Err(InvalidId::WrongCheckCode(chk_code));
         }
 
-        Ok(IdentificationNumber { div, birth, seq })
+        Ok(IdentificationNumber { div, birth, seq, chk_idx })
     }
 }
 
@@ -149,10 +152,14 @@ impl Identity for IdentificationNumber {
         self.seq
     }
 
-    //TODO: 优化校验过程
-    // 每次查询校验码均需要重复生成字符串的开销比较大，是否可以在构造身份号码对象时保存
-    // 相关信息？
     fn checksum(&self) -> Self::Checksum {
+        CHECK_CODE[self.chk_idx]
+    }
+}
+
+impl IdentificationNumber {
+    /// 根据结构体已经存储的行政区划、出生日期与序列号信息重新检验身份号码。
+    pub fn recheck(&self) -> bool {
         let s = format!(
             "{:>06}{}{:>03}",
             self.div.code,
@@ -167,7 +174,7 @@ impl Identity for IdentificationNumber {
                 .zip(WEIGHTS.iter())
                 .fold(0u8, |acc, (d, w)| (acc + d * w) % ID_MODULE) as usize;
 
-        CHECK_CODE[chk_idx]
+        CHECK_CODE[self.chk_idx] == CHECK_CODE[chk_idx]
     }
 }
 
@@ -310,6 +317,7 @@ mod test {
             div: Division::get("510108").unwrap(),
             birth: str::parse::<Birth>("19720505").unwrap(),
             seq: str::parse::<Seq>("213").unwrap(),
+            chk_idx: 5,
         };
 
         let valid_str = "510108197205052137";
