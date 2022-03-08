@@ -2,6 +2,8 @@
 members = [
     "idcard",
     "idcard-impl",
+]
+exclude = [
     "gb2260",
     "gb2260/generator"
 ]
